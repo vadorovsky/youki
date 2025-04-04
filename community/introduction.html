@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>libcontainer - Youki User and Developer Documentation</title>
+        <title>Community - Youki User and Developer Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -155,79 +155,23 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="libcontainer"><a class="header" href="#libcontainer">libcontainer</a></h1>
-<p>This crate is one of the core crates of the youki workspace, and has functions and structs that deal with the actual craetion and management of the container processes.</p>
-<p>Remember, in the end, a container is just another process in Linux, which has control groups, namespaces, pivot_root and other mechanisms applied to it. The program executing has the impression that is is running on a complete system, but from the host system's perspective, it is just another process, and has attributes such as pid, file descriptors, etc. associated with it like any other process.</p>
-<p>Along with the container related functions, this crate also provides Youki Config, a subset of the OCI spec config. This config contains only the essential data required for running the containers, and due to its smaller size, parsing it and passing it around is more efficient than the complete OCI spec config struct.</p>
-<p>Other than that, this crate also provides a wrapper over basic Linux sockets, which are then used internally as well as by youki to communicate between the main youki process and the forked container process as well as the intermediate process.</p>
-<p>This crate also provides an interface for Apparmor which is another Linux Kernel module allowing to apply security profiles on a per-program basis. More information about it can be found at <a href="https://apparmor.net/">https://apparmor.net/</a>.</p>
-<h3 id="notes"><a class="header" href="#notes">Notes</a></h3>
-<h4 id="some-other-modules-expose-by-this-crate-are"><a class="header" href="#some-other-modules-expose-by-this-crate-are">Some other modules expose by this crate are</a></h4>
+                        <h1 id="community"><a class="header" href="#community">Community</a></h1>
 <ul>
-<li>rootfs, which is a ramfs like simple filesystem used by kernel during initialization</li>
-<li>hooks, which allow running of specified program at certain points in the container lifecycle, such as before and after creation, start etc.</li>
-<li>signals, which provide a wrapper to convert to and from signal numbers and text representation of signal names</li>
-<li>capabilities, which has functions related to set and reset specific capabilities, as well as to drop extra privileges
-<ul>
-<li><a href="https://blog.container-solutions.com/linux-capabilities-in-practice">Simple explanation of capabilities</a></li>
-<li><a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">man page for capabilities</a></li>
-</ul>
-</li>
-<li>tty module which daels with providing terminal interface to the container process
-<ul>
-<li><a href="https://man7.org/linux/man-pages/man7/pty.7.html">pseudoterminal man page</a> : Information about the pseudoterminal system, useful to understand console_socket parameter in create subcommand</li>
-</ul>
-</li>
-</ul>
-<h4 id="executor"><a class="header" href="#executor">Executor</a></h4>
-<p>By default and traditionally, the executor forks and execs into the binary
-command that specified in the oci spec. Using executors, we can override this
-behavior. For example, <code>youki</code> uses executor to implement running wasm
-workloads. Instead of running the command specified in the process section of
-the OCI spec, the wasm related executors can choose to execute wasm code
-instead. The executor will run at the end of the container init process.</p>
-<p>The API accepts only a single executor, so when using multiple executors, (try
-wasm first, then defaults to running a binary), the users should compose
-multiple executors into a single executor. The executor will return an error
-when the executor can't handle the workload.</p>
-<h4 id="namespaces--namespaces-provide-isolation-of-resources-such-as-filesystem-process-ids-networks-etc-on-kernel-level-this-module-contains-structs-and-functions-related-to-applying-or-un-applying-namespaces-to-the-calling-process"><a class="header" href="#namespaces--namespaces-provide-isolation-of-resources-such-as-filesystem-process-ids-networks-etc-on-kernel-level-this-module-contains-structs-and-functions-related-to-applying-or-un-applying-namespaces-to-the-calling-process">Namespaces : namespaces provide isolation of resources such as filesystem, process ids networks etc on kernel level. This module contains structs and functions related to applying or un-applying namespaces to the calling process</a></h4>
-<ul>
-<li><a href="https://man7.org/linux/man-pages/man7/pid_namespaces.7.html">pid namespace man page</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/clone.2.html">CLONE_NEWUSER flag</a></li>
-</ul>
-<blockquote>
-<p>Note: clone(2) offers us the ability to enter into user and pid namespace by creating only one process. However, clone(2) can only create new pid namespace, but cannot enter into existing pid namespaces. Therefore, to enter into existing pid namespaces, we would need to fork twice. Currently, there is no getting around this limitation.</p>
-</blockquote>
-<ul>
-<li><a href="https://man7.org/linux/man-pages/man2/fork.2.html">fork(2) man page</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/clone.2.html">clone(2) man page</a></li>
-</ul>
-<h4 id="pausing-and-resuming"><a class="header" href="#pausing-and-resuming">Pausing and resuming</a></h4>
-<p>Pausing a container indicates suspending all processes in it. This can be done with signals SIGSTOP and SIGCONT, but these can be intercepted. Using cgroups to suspend and resume processes without letting tasks know.</p>
-<ul>
-<li><a href="https://man7.org/linux/man-pages/man7/cgroups.7.html">cgroups man page</a></li>
-<li><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/freezer-subsystem.txt">freezer cgroup kernel documentation</a></li>
-</ul>
-<h4 id="the-following-are-some-resources-that-can-help-understand-with-various-linux-features-used-in-the-code-of-this-crate"><a class="header" href="#the-following-are-some-resources-that-can-help-understand-with-various-linux-features-used-in-the-code-of-this-crate">The following are some resources that can help understand with various Linux features used in the code of this crate</a></h4>
-<ul>
-<li><a href="https://dev.to/rrampage/surviving-the-linux-oom-killer-2ki9">oom-score-adj</a></li>
-<li><a href="https://man7.org/linux/man-pages/man1/unshare.1.html">unshare man page</a></li>
-<li><a href="https://man7.org/linux/man-pages/man7/user_namespaces.7.html">user-namespace man page</a></li>
-<li><a href="https://man7.org/linux/man-pages/man3/wait.3p.html">wait man page</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/pipe.2.html">pipe2 man page</a> : Definition and usage of pipe2</li>
-<li><a href="https://man7.org/linux/man-pages/man7/unix.7.html">Unix Sockets man page</a> : Useful to understand sockets</li>
-<li><a href="https://man7.org/linux/man-pages/man2/prctl.2.html">prctl man page</a> : Process control man pages</li>
+<li><a href="./maintainer.html">Maintainer</a></li>
+<li><a href="./goversance.html">Governance</a></li>
+<li><a href="./contributing.html">Contributing</a></li>
+<li><a href="./chat.html">Chat</a></li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../developer/libcgroups.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../user/webassembly.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../developer/liboci_cli.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../community/maintainer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -237,11 +181,11 @@ when the executor can't handle the workload.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../developer/libcgroups.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../user/webassembly.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../developer/liboci_cli.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../community/maintainer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
