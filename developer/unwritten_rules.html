@@ -36,11 +36,23 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -135,7 +150,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -160,7 +180,7 @@
 <h2 id="conventions-to-follow"><a class="header" href="#conventions-to-follow">Conventions to follow</a></h2>
 <h4 id="errors"><a class="header" href="#errors">Errors</a></h4>
 <p>Youki currently uses <a href="https://www.crates.io/crates/anyhow">anyhow</a> library to deal with errors occurring during its execution. So wherever you use fallible actions, or functions that can return <code>Result</code>, make sure you attach enough information with the errors so that error logs can be useful for debugging later. For example, if you are reading a file, or parsing something and the operation does not succeed, you can add the path from which you attempted to read the file, or the string that you attempted to parse.</p>
-<p>Also for the error messages, we follow the convention all small-case letters and no period at the end, as discussed in <a href="https://github.com/containers/youki/issues/313">this PR</a>. Whenever you write error messages, please follow this convention to keep them uniform.</p>
+<p>Also for the error messages, we follow the convention all small-case letters and no period at the end, as discussed in <a href="https://github.com/youki-dev/youki/issues/313">this PR</a>. Whenever you write error messages, please follow this convention to keep them uniform.</p>
 <h4 id="logs"><a class="header" href="#logs">Logs</a></h4>
 <p>youki uses <a href="https://crates.io/crates/log">log</a> crate to log information while running. Whenever adding code to interact with system or kernel features or such, make sure to add debug logs so that if youki crashes, you can trace the errors and zero-in on the reasons using logs.</p>
 <h4 id="comments"><a class="header" href="#comments">Comments</a></h4>
@@ -216,6 +236,7 @@
         <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
+
 
 
     </div>
