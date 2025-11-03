@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.0.2](https://github.com/vadorovsky/youki/compare/v0.0.1...v0.0.2) - 2025-11-03
+
 ## [v0.5.6](https://github.com/youki-dev/youki/compare/v0.5.5...v0.5.6) - 2025-10-24
 ### 💪 Improvements
 - fix(3197): fix youki version command Part of Enhancing Compatibility with runc by @tommady in https://github.com/youki-dev/youki/pull/3200
